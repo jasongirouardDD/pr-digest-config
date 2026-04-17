@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -cn --rawfile ctx ~/.claude/pr-digest/startup-check.md '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: $ctx}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

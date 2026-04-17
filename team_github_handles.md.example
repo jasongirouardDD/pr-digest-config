@@ -1,0 +1,38 @@
+---
+name: Team GitHub handles
+description: Team roster + cached GitHub login handles. Used by the PR digest cron.
+type: reference
+---
+Team roster for the daily PR digest cron (sent as Slack DM).
+
+**<Group 1 name, e.g. "Engineering">:**
+
+| Name | Email | GitHub handle |
+|---|---|---|
+| <Full Name> | <email@example.com> | `<handle>` |
+| <Full Name> | <email@example.com> | `<handle>` |
+
+**<Group 2 name, e.g. "Analytics">:**
+
+| Name | Email | GitHub handle |
+|---|---|---|
+| <Full Name> | <email@example.com> | `<handle>` |
+
+**<Group 3 name, e.g. "Design / Research">:**
+
+| Name | Email | GitHub handle |
+|---|---|---|
+| <Full Name> | <email@example.com> | `<handle>` |
+
+To re-discover a handle that stops returning results: search `org:<YOUR_GITHUB_ORG> is:pr "<Full Name>"` and match by author display name.
+
+---
+
+## Setup notes
+
+Claude will populate the handle column on first run by:
+1. Querying the employee directory (e.g. Glean's `employee_search`) for a GitHub profile link.
+2. If empty, searching GitHub PRs authored by that person's full name and matching.
+3. If still no luck, inspecting recent commits or branch names in your org.
+
+Save this file to `~/.claude/projects/<your-sanitized-cwd>/memory/team_github_handles.md` (Claude knows where). After initial discovery, future runs skip the lookup.
