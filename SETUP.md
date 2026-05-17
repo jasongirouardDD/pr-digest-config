@@ -24,7 +24,7 @@ Replace `<YOUR_SLACK_USER_ID>`, `<YOUR_GITHUB_ORG>`, and the team roster before 
 I want a twice-daily Slack DM summarizing PRs merged by my team.
 
 Schedule:
-- Morning digest around 7 AM local time, covering the past 24 hours
+- Morning digest at 7:03 AM local time, covering the past 24 hours
 - Evening digest around 5 PM local time, covering merges since morning
 
 Deliver as a Slack DM to my user ID: <YOUR_SLACK_USER_ID>
@@ -50,8 +50,10 @@ Slack formatting (Slack mrkdwn, NOT Markdown):
 Each digest ends with a single line: *No PRs:* <First L>, <First L>, ... listing anyone who shipped nothing.
 
 Before scheduling, run ONE test digest so I can verify the format. After I confirm, set up:
-1. Two durable recurring cron jobs with the finalized prompts
-2. A SessionStart hook in ~/.claude/settings.json that auto-refreshes the crons on launch (to work around the 7-day platform expiry)
+1. Two durable recurring cron jobs with the finalized prompts — morning at 7:03 AM local, evening around 5 PM local. Save the finalized prompts to `~/.claude/routines/pr-digest-morning.txt` and `~/.claude/routines/pr-digest-evening.txt`.
+2. A SessionStart hook in ~/.claude/settings.json that auto-refreshes the crons on launch (to work around the 7-day platform expiry). Use the hook from `session-start-hook.json` in this repo. Copy `startup-check.md` to `~/.claude/routines/startup-check.md`.
+
+Connectors needed: GitHub MCP, Linear MCP, Slack MCP.
 
 Reference templates at https://github.com/jasongirouardDD/pr-digest-config if you need the exact prompt or hook structure.
 ```
@@ -68,7 +70,7 @@ Claude sends a test digest. Give it feedback — it'll update the cron prompts a
 
 ## 4. Activate the SessionStart hook
 
-After Claude sets up the hook, restart Claude Code or type `/hooks` once to reload config. On every launch thereafter, the hook silently verifies both crons exist and recreates them from `~/.claude/pr-digest/morning.txt` and `evening.txt` if missing.
+After Claude sets up the hook, restart Claude Code or type `/hooks` once to reload config. On every launch thereafter, the hook silently verifies both crons exist and recreates them from `~/.claude/routines/pr-digest-morning.txt` and `pr-digest-evening.txt` if missing.
 
 ## 5. Day-to-day maintenance
 

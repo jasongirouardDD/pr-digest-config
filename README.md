@@ -32,9 +32,9 @@ See **[SETUP.md](SETUP.md)** — about 5 minutes.
 
 | File | Purpose |
 |---|---|
-| [`morning.txt`](morning.txt) | Template cron prompt for the morning digest |
-| [`evening.txt`](evening.txt) | Template cron prompt for the evening digest |
-| [`startup-check.md`](startup-check.md) | SessionStart hook instructions (auto-renew crons past 7-day expiry) |
+| [`pr-digest-morning.txt`](pr-digest-morning.txt) | Template cron prompt for the morning digest (copy to `~/.claude/routines/`) |
+| [`pr-digest-evening.txt`](pr-digest-evening.txt) | Template cron prompt for the evening digest (copy to `~/.claude/routines/`) |
+| [`startup-check.md`](startup-check.md) | SessionStart hook instructions (auto-renew crons past 7-day expiry; copy to `~/.claude/routines/`) |
 | [`session-start-hook.json`](session-start-hook.json) | Hook JSON to merge into `~/.claude/settings.json` |
 | [`team_github_handles.md.example`](team_github_handles.md.example) | Roster template |
 | [`SETUP.md`](SETUP.md) | Full setup guide |
@@ -43,8 +43,8 @@ See **[SETUP.md](SETUP.md)** — about 5 minutes.
 
 1. **Claude Code's built-in cron** (`CronCreate`) schedules two durable recurring jobs.
 2. When each fires, Claude runs the prompt in `morning.txt` / `evening.txt`: queries GitHub for merged PRs by your team, enriches with Linear ticket context, formats Slack mrkdwn, DMs you.
-3. **7-day expiry workaround**: each run ends with `CronDelete` + `CronCreate` to reset the clock. If Claude Code is closed for >7 days, the SessionStart hook rebuilds the crons on next launch from the saved prompts.
-4. All state is local — under `~/.claude/`. No cloud service.
+3. **7-day expiry workaround**: each run ends with `CronDelete` + `CronCreate` to reset the clock. If Claude Code is closed for >7 days, the SessionStart hook rebuilds the crons on next launch from `~/.claude/routines/pr-digest-morning.txt` and `pr-digest-evening.txt`.
+4. All state is local — under `~/.claude/routines/`. No cloud service.
 
 ## Customization
 
