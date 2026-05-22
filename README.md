@@ -42,8 +42,8 @@ See **[SETUP.md](SETUP.md)** — about 5 minutes.
 ## How it works
 
 1. **Claude Code's built-in cron** (`CronCreate`) schedules two durable recurring jobs.
-2. When each fires, Claude runs the prompt in `morning.txt` / `evening.txt`: queries GitHub for merged PRs by your team, enriches with Linear ticket context, formats Slack mrkdwn, DMs you.
-3. **7-day expiry workaround**: each run ends with `CronDelete` + `CronCreate` to reset the clock. If Claude Code is closed for >7 days, the SessionStart hook rebuilds the crons on next launch from the saved prompts.
+2. When each fires, Claude runs the prompt in `~/.claude/routines/pr-digest-morning.txt` / `pr-digest-evening.txt`: queries GitHub for merged PRs by your team, enriches with Linear ticket context, formats Slack mrkdwn, DMs you.
+3. **7-day expiry workaround**: each run ends with `CronDelete` + `CronCreate` to reset the clock. If Claude Code is closed for >7 days, the SessionStart hook rebuilds the crons on next launch from `~/.claude/routines/`.
 4. All state is local — under `~/.claude/`. No cloud service.
 
 ## Customization
