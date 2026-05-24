@@ -14,7 +14,7 @@ For each of the two expected crons:
 
 ## Step 3 — Refresh a missing cron
 For each missing cron:
-1. Read the saved prompt from `~/.claude/pr-digest/morning.txt` or `~/.claude/pr-digest/evening.txt`.
+1. Read the saved prompt from `~/.claude/routines/pr-digest-morning.txt` or `~/.claude/routines/pr-digest-evening.txt`.
 2. Call `CronCreate` with the expected schedule, recurring=true, durable=true, prompt=<file contents>.
 
 ## Step 4 — Report

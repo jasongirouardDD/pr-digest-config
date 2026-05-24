@@ -68,7 +68,7 @@ Claude sends a test digest. Give it feedback — it'll update the cron prompts a
 
 ## 4. Activate the SessionStart hook
 
-After Claude sets up the hook, restart Claude Code or type `/hooks` once to reload config. On every launch thereafter, the hook silently verifies both crons exist and recreates them from `~/.claude/pr-digest/morning.txt` and `evening.txt` if missing.
+After Claude sets up the hook, restart Claude Code or type `/hooks` once to reload config. On every launch thereafter, the hook silently verifies both crons exist and recreates them from `~/.claude/routines/pr-digest-morning.txt` and `pr-digest-evening.txt` if missing.
 
 ## 5. Day-to-day maintenance
 
