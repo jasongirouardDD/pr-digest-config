@@ -1,0 +1,75 @@
+Send the morning Team PR Digest as a Slack DM to the user (channel_id = <YOUR_SLACK_USER_ID>), then self-renew so the 7-day expiry never triggers.
+
+ROSTER (authoritative source: <YOUR_CLAUDE_MEMORY_DIR>/team_github_handles.md — read first):
+
+<Group 1 name, e.g. "Engineering">:
+- <Full Name> → <github_handle>
+- <Full Name> → <github_handle>
+- ...
+
+<Group 2 name, e.g. "Analytics">:
+- <Full Name> → <github_handle>
+
+<Group 3 name, e.g. "Design / Research">:
+- <Full Name> → <github_handle>
+
+STEPS:
+1. Read team_github_handles.md from memory.
+2. Compute since = now - 24h in ISO 8601 UTC. Label as "past 24h".
+3. For each handle: mcp__github__search_issues q=`org:<YOUR_GITHUB_ORG> is:pr is:merged author:<handle> merged:>{since}` per_page=30
+4. Extract ticket IDs from PR title/body/branch (your issue tracker's prefixes, e.g. PROJ-\d+). Ignore placeholders with all-zero tails. For real IDs, fetch via your issue tracker MCP. Scan body for Google Docs / Figma / PRD URLs.
+5. Convert all merge times from UTC to <YOUR_TIMEZONE, e.g. America/New_York> (respect DST) and format as `MM-DD H:MM AM/PM TZ`.
+
+SLACK FORMATTING (Slack mrkdwn, NOT Markdown):
+- `*bold*` (single asterisks) for visual weight: author names, PR titles (wrap link: `*<URL|Title>*`), repo names, timestamps, "n/a" values, field labels (`*What:*`, `*UX:*`, `*Why:*`), and `*No PRs:*`.
+- Keep body prose un-emphasized.
+- Never italics (`_x_`) or Markdown (`**bold**`, `[text](url)`).
+- Links: `<URL|text>`. Bold a link by wrapping: `*<URL|text>*`.
+- Inline code: backticks.
+- Bullets: `•` top-level, `◦` indented 4 spaces for sub-bullets.
+
+WRITING THE THREE FIELDS:
+- *What:* Technical change in 1 sentence. File/field/flag names allowed.
+- *UX:* Visible effect for the end user. For wire-level / backend-only / proto / string PRs with no user-visible change, write *n/a*.
+- *Why:* Frame in PRODUCT / USER-EXPERIENCE terms, NOT engineering. "What user capability does this serve?" NOT "what technical gap does this close?"
+    - BAD: "Downstream services need additional context to attribute the call."
+    - GOOD: "Groundwork for attributing invites to the admin who sent them."
+    - For proto / schema / flag / string PRs: "Foundation for <user-visible capability>" or "Groundwork for <user-visible capability>".
+    - If unmappable: "Internal plumbing — user-facing impact unclear."
+- *Linear / PRD:* URL(s). ONLY IF a real ticket or doc URL exists. Omit the entire line if none.
+
+PR ENTRY FORMAT (What + UX on one line, Why on its own line):
+
+*<Author Name>*
+• *<PR_URL|PR title>* — *<repo>* · *<MM-DD H:MM AM/PM TZ>*
+    ◦ *What:* <1 sentence>  *UX:* <1 sentence — or *n/a*>
+    ◦ *Why:* <1 sentence — product/UX framing>
+    ◦ *Linear / PRD:* <URL(s)> — OMITTED if none.
+
+Two-space separator between What period and `*UX:*`. No team/group section headers. List authors in roster order.
+
+NO-PR SUMMARY: End with `*No PRs:* <First L>, <First L>, ...` (roster order). Omit if every roster member had a PR.
+
+OVERALL STRUCTURE:
+
+*Team PR Digest — <YYYY-MM-DD> (past 24h)*
+*Window:* <start local> → <end local>
+
+<author entries in roster order, blank line between>
+
+*No PRs:* <list>
+
+SEND: mcp__plugin_slack_slack__slack_send_message, channel_id: `<YOUR_SLACK_USER_ID>`
+
+=== SELF-RENEW (CRITICAL — do this AFTER sending the digest) ===
+1. CronList → find the cron whose schedule matches this one's.
+2. Capture its full prompt text.
+3. CronDelete its ID.
+4. CronCreate with the same cron schedule, recurring=true, durable=true, prompt=<captured text>.
+
+EDGE CASES:
+- Zero merges across everyone → still send: "No merged PRs across the team in this window."
+- GitHub truncation → split by author.
+- Ticket 404 → skip silently.
+- Skip draft PRs and bot/automation accounts.
+- Never post to a channel other than <YOUR_SLACK_USER_ID>.

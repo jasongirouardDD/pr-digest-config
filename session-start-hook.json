@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "jq -cn --rawfile ctx ~/.claude/pr-digest/startup-check.md '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: $ctx}}'"
+            "command": "jq -cn --rawfile ctx ~/.claude/routines/pr-digest-morning-startup-check.md '{hookSpecificOutput: {hookEventName: \"SessionStart\", additionalContext: $ctx}}'"
           }
         ]
       }
